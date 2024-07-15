@@ -133,34 +133,26 @@ def play_song(emotion):
     else:
         st.write("No song found for this emotion.")
 
-# refreshing tokens in case of expiry
-def refresh_spotify_token():
-    token_info = sp_oauth.get_cached_token()
-    if sp_oauth.is_token_expired(token_info):
-        token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
-    return token_info['access_token']
-
-def get_spotify_auth_url():
-    return sp_oauth.get_authorize_url()
-    
-# Main function for Streamlit app
 def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
 
-    session_state = st.report_thread.get_report_ctx().session
-    
-    # Check if callback received
-    if 'code' in session_state:
-        auth_code = session_state.code
-        token_info = sp_oauth.get_access_token(auth_code)
-        if token_info:
+    # Managing session state with SessionState
+    session_state = st.session_state
+    if 'token_info' not in session_state:
+        session_state.token_info = None
+
+    # Checking if callback received
+    if st.url_request_state.session_id:
+        auth_code = st.url_request_state.query_params.get('code')
+        session_state.token_info = sp_oauth.get_access_token(auth_code)
+        if session_state.token_info:
             st.success("Authorization successful! You can now use MoodMelody.")
         else:
             st.error("Authorization failed.")
 
     else:
-        # Check if user is authorized
-        if not sp_oauth.get_cached_token():
+        # Checking if user is authorized
+        if not session_state.token_info:
             st.error("Please authorize MoodMelody to access your Spotify account.")
             auth_url = sp_oauth.get_authorize_url()
             st.markdown(f"[Authorize MoodMelody]({auth_url})")
@@ -172,7 +164,6 @@ def main():
         detected_emotion = predict_emotion(text)
         st.write(f"Detected emotion: {detected_emotion}")
         play_song(detected_emotion)
-
 
 if __name__ == "__main__":
     main()
