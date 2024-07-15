@@ -39,7 +39,13 @@ emotion_to_song_uri = {
 }
 
 # Load the saved model, tokenizer, label encoder, and maxlen
-model = tf.keras.models.load_model('./saved_models/Emotion Recognition from text.h5')
+model_path = './saved_models/Emotion Recognition from text.h5'
+try:
+    model = tf.keras.models.load_model(model_path)
+    st.success('Model loaded successfully!')
+except OSError as e:
+    st.error(f'Error loading model: {e}')
+  
 with open('./saved_models/tokenizer.pkl', 'rb') as file:
     tokenizer = pickle.load(file)
 with open('./saved_models/label_encoder.pkl', 'rb') as file:
