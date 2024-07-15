@@ -136,14 +136,14 @@ def play_song(emotion):
 def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
 
-    # Managing session state with SessionState
+    # Manage session state with SessionState
     session_state = st.session_state
     if 'token_info' not in session_state:
         session_state.token_info = None
 
-    # Checking if callback received
-    if 'code' in st.experimental_request_session_state:
-        auth_code = st.experimental_request_session_state.code
+    # Check if callback received
+    if 'code' in st.request.query_params:
+        auth_code = st.request.query_params['code']
         session_state.token_info = sp_oauth.get_access_token(auth_code)
         if session_state.token_info:
             st.success("Authorization successful! You can now use MoodMelody.")
@@ -151,7 +151,7 @@ def main():
             st.error("Authorization failed.")
 
     else:
-        # Checking if user is authorized
+        # Check if user is authorized
         if not session_state.token_info:
             st.error("Please authorize MoodMelody to access your Spotify account.")
             auth_url = sp_oauth.get_authorize_url()
