@@ -147,9 +147,11 @@ def get_spotify_auth_url():
 def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
 
+    session_state = st.report_thread.get_report_ctx().session
+    
     # Check if callback received
-    if 'code' in st.experimental_request_session_state:
-        auth_code = st.experimental_request_session_state['code']
+    if 'code' in session_state:
+        auth_code = session_state.code
         token_info = sp_oauth.get_access_token(auth_code)
         if token_info:
             st.success("Authorization successful! You can now use MoodMelody.")
