@@ -89,17 +89,17 @@ def normalized_sentence(sentence):
 def predict_emotion(text):
     # Preprocessing
     text = normalized_sentence(text)
-    st.write(f"Preprocessed text: {text}")
+    #st.write(f"Preprocessed text: {text}")
     sequence = tokenizer.texts_to_sequences([text])
-    st.write(f"Tokenized sequence: {sequence}")
+    #st.write(f"Tokenized sequence: {sequence}")
     padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
-    st.write(f"Padded sequence: {padded_sequence}")
+    #st.write(f"Padded sequence: {padded_sequence}")
 
     # Predict emotion
     prediction = model.predict(padded_sequence)
-    st.write(f"Prediction probabilities: {prediction}")
+    #st.write(f"Prediction probabilities: {prediction}")
     predicted_label = np.argmax(prediction, axis=1)
-    st.write(f"Predicted label index: {predicted_label}")
+    #st.write(f"Predicted label index: {predicted_label}")
     predicted_emotion = le.inverse_transform(predicted_label)[0]
 
     return predicted_emotion
