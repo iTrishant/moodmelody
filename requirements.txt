@@ -3,7 +3,6 @@ numpy
 tensorflow==2.15.0
 nltk
 streamlit
-sklearn
 scikit-learn
 kera
 pandas
