@@ -115,9 +115,9 @@ def play_song(emotion):
 # Main function for Streamlit app
 def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
-    user_input = st.text_input("Enter how you are feeling:")
+    text = st.text_input("Enter how you are feeling:")
     if st.button("Detect Emotion and Play Song"):
-        detected_emotion = predict_emotion(user_input)
+        detected_emotion = predict_emotion(text)
         st.write(f"Detected emotion: {detected_emotion}")
         play_song(detected_emotion)
 
