@@ -146,16 +146,26 @@ def get_spotify_auth_url():
 # Main function for Streamlit app
 def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
-    # Checking user authentication
-    if not sp_oauth.get_cached_token():
-        st.error("Please authorize MoodMelody to access your Spotify account.")
-        auth_url = get_spotify_auth_url()
-        st.markdown(f"[Authorize MoodMelody]({auth_url})")
-        return
 
-    # Authorized user flow
+    # Check if callback received
+    if 'code' in st.experimental_request_session_state:
+        auth_code = st.experimental_request_session_state['code']
+        token_info = sp_oauth.get_access_token(auth_code)
+        if token_info:
+            st.success("Authorization successful! You can now use MoodMelody.")
+        else:
+            st.error("Authorization failed.")
+
+    else:
+        # Check if user is authorized
+        if not sp_oauth.get_cached_token():
+            st.error("Please authorize MoodMelody to access your Spotify account.")
+            auth_url = get_spotify_auth_url()
+            st.markdown(f"[Authorize MoodMelody]({auth_url})")
+
+    # Additional app logic
     text = st.text_input("Enter how you are feeling:")
-    
+
     if st.button("Detect Emotion and Play Song"):
         detected_emotion = predict_emotion(text)
         st.write(f"Detected emotion: {detected_emotion}")
