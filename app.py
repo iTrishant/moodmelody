@@ -11,8 +11,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-nltk.download('stopwords')
-nltk.download('wordnet')
+nltk.data.path.append("./nltk_data")
 
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
