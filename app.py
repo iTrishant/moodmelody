@@ -34,7 +34,8 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
                                                client_secret=CLIENT_SECRET,
                                                redirect_uri=REDIRECT_URI,
                                                scope="user-modify-playback-state user-read-playback-state",
-                                               open_browser=False))
+                                               open_browser=False,
+                                               cache_path="./.spotifycache"))
 
 # Define song URIs for each emotion
 emotion_to_song_uri = {
