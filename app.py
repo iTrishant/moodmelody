@@ -162,7 +162,7 @@ def main():
         # Check if user is authorized
         if not sp_oauth.get_cached_token():
             st.error("Please authorize MoodMelody to access your Spotify account.")
-            auth_url = get_spotify_auth_url()
+            auth_url = sp_oauth.get_authorize_url()
             st.markdown(f"[Authorize MoodMelody]({auth_url})")
 
     # Additional app logic
@@ -172,6 +172,7 @@ def main():
         detected_emotion = predict_emotion(text)
         st.write(f"Detected emotion: {detected_emotion}")
         play_song(detected_emotion)
+
 
 if __name__ == "__main__":
     main()
