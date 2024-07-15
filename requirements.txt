@@ -5,6 +5,5 @@ nltk
 streamlit
 sklearn
 scikit-learn
-sklearn
 kera
 pandas
