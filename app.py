@@ -127,6 +127,13 @@ def play_song(emotion):
     else:
         st.write("No song found for this emotion.")
 
+# refreshing tokens in case of expiry
+def refresh_spotify_token():
+    token_info = sp_oauth.get_cached_token()
+    if sp_oauth.is_token_expired(token_info):
+        token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
+    return token_info['access_token']
+
 def get_spotify_auth_url():
     return sp_oauth.get_authorize_url()
     
