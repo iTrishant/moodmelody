@@ -142,8 +142,8 @@ def main():
         session_state.token_info = None
 
     # Checking if callback received
-    if st.url_request_state.session_id:
-        auth_code = st.url_request_state.query_params.get('code')
+    if 'code' in st.experimental_request_session_state:
+        auth_code = st.experimental_request_session_state.code
         session_state.token_info = sp_oauth.get_access_token(auth_code)
         if session_state.token_info:
             st.success("Authorization successful! You can now use MoodMelody.")
