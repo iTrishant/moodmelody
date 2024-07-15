@@ -4,5 +4,4 @@ tensorflow==2.15.0
 nltk
 streamlit
 scikit-learn
-kera
 pandas
