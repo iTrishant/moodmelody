@@ -61,7 +61,7 @@ try:
     st.success('Model and tokenizer loaded successfully!')
 except OSError as e:
     st.error(f'Error loading model: {e}')
-
+print(le.classes_)
 # Preprocessing steps
 def lemmatization(text):
     text = text.split()
@@ -93,7 +93,7 @@ def normalized_sentence(sentence):
     sentence = remove_urls(sentence)
     sentence = lemmatization(sentence)
     return sentence
-print(le.classes_)
+
 # Function to preprocess and predict emotion
 def predict_emotion(text):
     try:
