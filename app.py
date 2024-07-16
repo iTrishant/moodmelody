@@ -3,6 +3,15 @@ import pickle
 import numpy as np
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import os
+import re
+import string
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+
+# Ensure the necessary NLTK data is downloaded
+import nltk
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 model_path = './saved_models/Emotion Recognition from text.h5'
 tokenizer_path = './saved_models/tokenizer.pkl'
