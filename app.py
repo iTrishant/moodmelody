@@ -10,15 +10,8 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 # Ensure the necessary NLTK data is downloaded
-nltk.data.path.append("./nltk_data")
-try:
-    nltk.data.find('stopwords.zip')
-except LookupError:
-    nltk.download('stopwords', download_dir='./nltk_data')
-try:
-    nltk.data.find('wordnet.zip')
-except LookupError:
-    nltk.download('wordnet', download_dir='./nltk_data')
+nltk.download('stopwords')
+nltk.download('wordnet')
 
 # Initialize stop words and lemmatizer
 stop_words = set(stopwords.words('english'))
