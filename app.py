@@ -11,6 +11,8 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import logging
 
+logging.basicConfig(level=logging.DEBUG)
+
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
 
@@ -99,8 +101,13 @@ def predict_emotion(text):
         text = normalized_sentence(text)
         sequence = tokenizer.texts_to_sequences([text])
         padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
+
+        print(f"Sequence: {sequence}")
+        print(f"Padded Sequqnce: {padded_sequence}")
+        
         logging.debug(f"Sequence: {sequence}")
         logging.debug(f"Padded Sequence: {padded_sequence}")
+        
         # Predict emotion
         prediction = model.predict(padded_sequence)
         predicted_label = np.argmax(prediction, axis=1)
