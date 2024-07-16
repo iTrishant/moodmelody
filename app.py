@@ -13,6 +13,10 @@ import nltk
 nltk.download('stopwords')
 nltk.download('wordnet')
 
+# Initialize stop words and lemmatizer
+stop_words = set(stopwords.words('english'))
+lemmatizer = WordNetLemmatizer()
+
 model_path = './saved_models/Emotion Recognition from text.h5'
 tokenizer_path = './saved_models/tokenizer.pkl'
 label_encoder_path = './saved_models/label_encoder.pkl'
