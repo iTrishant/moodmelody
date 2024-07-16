@@ -61,7 +61,7 @@ try:
     st.success('Model and tokenizer loaded successfully!')
 except OSError as e:
     st.error(f'Error loading model: {e}')
-print(le.classes_)
+
 # Preprocessing steps
 def lemmatization(text):
     text = text.split()
@@ -102,76 +102,91 @@ def predict_emotion(text):
         sequence = tokenizer.texts_to_sequences([text])
         padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
 
-        print(f"Sequence: {sequence}")
-        print(f"Padded Sequqnce: {padded_sequence}")
-        
+        # Debugging: Log the sequence and padded sequence
         logging.debug(f"Sequence: {sequence}")
         logging.debug(f"Padded Sequence: {padded_sequence}")
-        
+
         # Predict emotion
         prediction = model.predict(padded_sequence)
         predicted_label = np.argmax(prediction, axis=1)
-        print(predicted_label)
+
+        # Debugging: Log predicted label
+        logging.debug(f"Predicted label: {predicted_label}")
+
+        # Inverse transform to get predicted emotion
         predicted_emotion = le.inverse_transform(predicted_label)[0]
-        print(predicted_emotion)
+
+        # Debugging: Log predicted emotion
         logging.debug(f"Predicted emotion: {predicted_emotion}")
+
         return predicted_emotion
+
     except Exception as e:
         logging.error(f"Error during prediction: {e}")
         st.error(f"An error occurred during prediction: {e}")
         return None
-
-# Test script for prediction function
-text = "I love you"
-emotion = predict_emotion(text)
-print(f"Predicted emotion: {emotion}")
 
 # Function to play song based on emotion
 def play_song(emotion):
     song_uri = emotion_to_song_uri.get(emotion)
     if song_uri:
         try:
-          # Spotify authentication
-          token_info = sp_oauth.get_cached_token()
-          if not token_info:
-              auth_url = sp_oauth.get_authorize_url()
-              st.markdown(f"[Authenticate with Spotify]({auth_url})")
-              code = st.text_input("Enter the code from the URL after authentication:")
-              if code:
-                  token_info = sp_oauth.get_access_token(code)
-                  sp = spotipy.Spotify(auth=token_info['access_token'])
-          else:
-              sp = spotipy.Spotify(auth=token_info['access_token'])
-          devices = sp.devices()
-          if devices['devices']:
-                device_id = devices['devices'][0]['id']  # Select the first available device
+            token_info = sp_oauth.get_cached_token()
+            if not token_info:
+                auth_url = sp_oauth.get_authorize_url()
+                st.markdown(f"[Authenticate with Spotify]({auth_url})")
+                code = st.text_input("Enter the code from the URL after authentication:")
+                if code:
+                    try:
+                        token_info = sp_oauth.get_access_token(code)
+                        sp = spotipy.Spotify(auth=token_info['access_token'])
+                    except spotipy.SpotifyOauthError as e:
+                        st.error(f"Spotify OAuth error: {e}")
+                        return
+            else:
+                sp = spotipy.Spotify(auth=token_info['access_token'])
+
+            devices = sp.devices()
+            if devices['devices']:
+                device_id = devices['devices'][0]['id']
                 sp.start_playback(device_id=device_id, uris=[song_uri])
                 st.write(f"Playing song for {emotion}: {song_uri}")
-          else:
+            else:
                 st.write("No active devices found.")
+        
         except spotipy.SpotifyException as e:
             st.error(f"An error occurred while playing song: {e}")
     else:
         st.write("No song found for this emotion.")
 
-def get_spotify_auth_url():
-    return sp_oauth.get_authorize_url()
-
 def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
-
-
 
     text = st.text_input("Enter how you are feeling:")
     if st.button("Detect Emotion and Play Song"):
         detected_emotion = predict_emotion(text)
         if detected_emotion:
             st.write(f"Detected emotion: {detected_emotion}")
-            play_song(detected_emotion)
+
+            # Display the authentication URL if token is not cached
+            token_info = sp_oauth.get_cached_token()
+            if not token_info:
+                auth_url = sp_oauth.get_authorize_url()
+                st.markdown(f"[Authenticate with Spotify]({auth_url})")
+                code = st.text_input("Enter the code from the URL after authentication:")
+                if code:
+                    try:
+                        token_info = sp_oauth.get_access_token(code)
+                        global sp
+                        sp = spotipy.Spotify(auth=token_info['access_token'])
+                        play_song(detected_emotion)
+                    except spotipy.SpotifyOauthError as e:
+                        st.error(f"Spotify OAuth error: {e}")
+            else:
+                play_song(detected_emotion)
 
 if __name__ == "__main__":
     main()
-
 
 
 '''
