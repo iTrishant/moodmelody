@@ -28,17 +28,21 @@ label_encoder_path = './saved_models/label_encoder.pkl'
 maxlen_path = './saved_models/maxlen.pkl'
 
 @st.cache(supress_st_warning=True)
-try:
-    model = tf.keras.models.load_model(model_path)
-    with open(tokenizer_path, 'rb') as file:
-        tokenizer = pickle.load(file)
-    with open(label_encoder_path, 'rb') as file:
-        le = pickle.load(file)
-    with open(maxlen_path, 'rb') as file:
-        maxlen = pickle.load(file)
-    st.success('Model and tokenizer loaded successfully!')
-except OSError as e:
-    st.error(f'Error loading model: {e}')
+def load_model():
+    try:
+        model = tf.keras.models.load_model(model_path)
+        with open(tokenizer_path, 'rb') as file:
+            tokenizer = pickle.load(file)
+        with open(label_encoder_path, 'rb') as file:
+            le = pickle.load(file)
+        with open(maxlen_path, 'rb') as file:
+            maxlen = pickle.load(file)
+        st.success('Model and tokenizer loaded successfully!')
+        return model, tokenizer, le, maxlen
+    except OSError as e:
+        st.error(f'Error loading model: {e}')
+
+model, tokenizer, le, maxlen = load_model()
 
 # Check if files exist
 st.write(f"Model file exists: {os.path.exists(model_path)}")
