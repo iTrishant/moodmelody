@@ -29,7 +29,7 @@ def load_le():
 def load_maxlen():
     return torch.load('./saved_models/maxlen.pkl')
     
-@st.cache(hash_funcs={"MyUnhashableClass": lambda _: None}
+@st.cache(hash_funcs={"MyUnhashableClass": lambda _: None})
           
 model_path = './saved_models/Emotion Recognition from text.h5'
 tokenizer_path = './saved_models/tokenizer.pkl'
