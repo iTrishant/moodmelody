@@ -14,20 +14,14 @@ import torch
 # Ensure the necessary NLTK data is downloaded
 nltk.data.path.append('./nltk_data')
 
-# Ensure the necessary NLTK data is downloaded
+# Load NLTK resources
 try:
-    nltk.data.find('stopwords')
+    stop_words = nltk.corpus.stopwords.words('english')
+    lemmatizer = WordNetLemmatizer()
 except LookupError:
-    nltk.download('stopwords', download_dir='./nltk_data/corpora/')
+    nltk.download('stopwords', download_dir='./nltk_data/corpora')
+    nltk.download('wordnet', download_dir='./nltk_data')
 
-try:
-    nltk.data.find('wordnet')
-except LookupError:
-    nltk.download('wordnet', download_dir='./nltk_data/corpora/')
-
-# Initialize stop words and lemmatizer
-stop_words = set(stopwords.words('english'))
-lemmatizer = WordNetLemmatizer()
 
 @st.cache
 def load_model():
