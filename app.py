@@ -24,8 +24,9 @@ except LookupError:
     nltk.download('wordnet', download_dir='./nltk_data')
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-tf.get_logger().setLevel('ERROR')
-  
+#tf.get_logger().setLevel('ERROR')
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+ 
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
 
@@ -119,8 +120,9 @@ def predict_emotion(text):
         predicted_emotion = le.inverse_transform(predicted_label)[0]
 
         return predicted_emotion
-    except BrokenPipeError:
-        st.error("A BrokenPipeError occurred during the prediction. Please try again.")
+    except Exception as e:
+        logging.error(f"Error during prediction: {e}")
+        st.error(f"An error occurred during prediction: {e}")
         return None
         
 # Function to play song based on emotion
