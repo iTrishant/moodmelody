@@ -172,6 +172,7 @@ def main():
     if st.button("Play"):
         detected_emotion = predict_emotion(text)
         if detected_emotion:
+            print('hi')
             st.write(f"Detected emotion: {detected_emotion}")
             logging.debug(f"Detected emotion: {detected_emotion}")
 
