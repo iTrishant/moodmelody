@@ -2,6 +2,10 @@ import tensorflow as tf
 import pickle
 import numpy as np
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+import os
+
+model_path = './saved_models/Emotion Recognition from text.h5'
+print(f"Model file exists: {os.path.exists(model_path)}")
 
 # Load the saved model, tokenizer, label encoder, and maxlen
 model_path = './saved_models/Emotion Recognition from text.h5'
