@@ -112,15 +112,12 @@ def predict_emotion(text):
 
         # Predict emotion
         prediction = model.predict(padded_sequence)
+        logging.debug(f"Prediction: {prediction}")
+      
         predicted_label = np.argmax(prediction, axis=1)
-
-        # Debugging: Log predicted label
         logging.debug(f"Predicted label: {predicted_label}")
 
-        # Inverse transform to get predicted emotion
         predicted_emotion = le.inverse_transform(predicted_label)[0]
-
-        # Debugging: Log predicted emotion
         logging.debug(f"Predicted emotion: {predicted_emotion}")
 
         return predicted_emotion
@@ -136,6 +133,7 @@ def play_song(emotion):
     if song_uri:
         try:
             devices = sp.devices()
+            logging.debug(f"Devices: {devices}")
             if devices['devices']:
                 device_id = devices['devices'][0]['id']
                 sp.start_playback(device_id=device_id, uris=[song_uri])
@@ -144,6 +142,7 @@ def play_song(emotion):
                 st.write("No active devices found.")
         
         except spotipy.SpotifyException as e:
+            logging.error(f"Spotify error: {e}")
             st.error(f"An error occurred while playing song: {e}")
     else:
         st.write("No song found for this emotion.")
@@ -156,6 +155,7 @@ def main():
         detected_emotion = predict_emotion(text)
         if detected_emotion:
             st.write(f"Detected emotion: {detected_emotion}")
+            logging.debug(f"Detected emotion: {detected_emotion}")
 
             # Display the authentication URL if token is not cached
             token_info = sp_oauth.get_cached_token()
@@ -170,6 +170,7 @@ def main():
                         sp = spotipy.Spotify(auth=token_info['access_token'])
                         play_song(detected_emotion)
                     except spotipy.SpotifyOauthError as e:
+                        logging.error(f"Spotify OAuth error: {e}")
                         st.error(f"Spotify OAuth error: {e}")
             else:
                 sp = spotipy.Spotify(auth=token_info['access_token'])
