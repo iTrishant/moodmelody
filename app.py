@@ -54,11 +54,6 @@ st.write(f"Tokenizer file size: {os.path.getsize(tokenizer_path)} bytes")
 st.write(f"Label Encoder file size: {os.path.getsize(label_encoder_path)} bytes")
 st.write(f"Maxlen file size: {os.path.getsize(maxlen_path)} bytes")
 
-model = load_model()
-tokenizer = load_tokenizer()
-maxlen = load_maxlen()
-le = load_le()
-    
 # Preprocessing steps
 def lemmatization(text):
     text = text.split()
