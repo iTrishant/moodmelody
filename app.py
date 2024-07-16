@@ -150,9 +150,8 @@ def main():
     if not token_info:
         auth_url = sp_oauth.get_authorize_url()
         st.markdown(f"[Authenticate with Spotify]({auth_url})")
-        url = st.experimental_get_url()
-        if 'code' in url:
-            code = url.split("code=")[1].split("&")[0]
+        code = st.text_input("Enter the code from the URL after authentication:")
+        if code:
             token_info = sp_oauth.get_access_token(code)
             sp = spotipy.Spotify(auth=token_info['access_token'])
     else:
