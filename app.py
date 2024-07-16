@@ -21,6 +21,9 @@ try:
     nltk.data.find('corpora/wordnet.zip')
 except LookupError:
     nltk.download('wordnet', download_dir='./nltk_data')
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+tf.get_logger().setLevel('ERROR')
   
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
@@ -145,8 +148,9 @@ def main():
     if not token_info:
         auth_url = sp_oauth.get_authorize_url()
         st.markdown(f"[Authenticate with Spotify]({auth_url})")
-        code = st.experimental_get_query_params().get('code')
-        if code:
+        url = st.experimental_get_url()
+        if 'code' in url:
+            code = url.split("code=")[1].split("&")[0]
             token_info = sp_oauth.get_access_token(code)
             sp = spotipy.Spotify(auth=token_info['access_token'])
     else:
@@ -155,8 +159,9 @@ def main():
     user_input = st.text_input("Enter how you are feeling:")
     if st.button("Detect Emotion and Play Song"):
         detected_emotion = predict_emotion(user_input)
-        st.write(f"Detected emotion: {detected_emotion}")
-        play_song(detected_emotion)
+        if detected_emotion:
+            st.write(f"Detected emotion: {detected_emotion}")
+            play_song(detected_emotion)
         
 if __name__ == "__main__":
     main()
