@@ -102,6 +102,7 @@ def normalized_sentence(sentence):
 def predict_emotion(text):
     try:
         # Preprocessing
+        logging.debug('Starting emotion prediction...')
         text = normalized_sentence(text)
         sequence = tokenizer.texts_to_sequences([text])
         padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
