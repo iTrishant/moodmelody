@@ -22,21 +22,24 @@ except LookupError:
     nltk.download('stopwords', download_dir='./nltk_data/corpora')
     nltk.download('wordnet', download_dir='./nltk_data')
 
-
 @st.cache
-def load_model():
-    return torch.load('./saved_models/Emotion Recognition from text.h5')
-def load_tokenizer():
-    return torch.load('./saved_models/tokenizer.pkl')
-def load_le():
-    return torch.load('./saved_models/label_encoder.pkl')
-def load_maxlen():
-    return torch.load('./saved_models/maxlen.pkl')
-          
+     
 model_path = './saved_models/Emotion Recognition from text.h5'
 tokenizer_path = './saved_models/tokenizer.pkl'
 label_encoder_path = './saved_models/label_encoder.pkl'
 maxlen_path = './saved_models/maxlen.pkl'
+
+try:
+    model = tf.keras.models.load_model(model_path)
+    with open(tokenizer_path, 'rb') as file:
+        tokenizer = pickle.load(file)
+    with open(label_encoder_path, 'rb') as file:
+        le = pickle.load(file)
+    with open(maxlen_path, 'rb') as file:
+        maxlen = pickle.load(file)
+    st.success('Model and tokenizer loaded successfully!')
+except OSError as e:
+    st.error(f'Error loading model: {e}')
 
 # Check if files exist
 st.write(f"Model file exists: {os.path.exists(model_path)}")
