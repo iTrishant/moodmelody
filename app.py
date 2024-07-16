@@ -21,6 +21,38 @@ with open(label_encoder_path, 'rb') as file:
 with open(maxlen_path, 'rb') as file:
     maxlen = pickle.load(file)
 
+# Preprocessing steps
+def lemmatization(text):
+    text = text.split()
+    text = [lemmatizer.lemmatize(word) for word in text]
+    return " ".join(text)
+
+def remove_stop_words(text):
+    return " ".join([word for word in text.split() if word not in stop_words])
+
+def remove_numbers(text):
+    return ''.join([char for char in text if not char.isdigit()])
+
+def lower_case(text):
+    return text.lower()
+
+def remove_punctuations(text):
+    text = re.sub(f'[{re.escape(string.punctuation)}]', ' ', text)
+    text = re.sub('\s+', ' ', text).strip()
+    return text
+
+def remove_urls(text):
+    return re.sub(r'https?://\S+|www\.\S+', '', text)
+
+def normalized_sentence(sentence):
+    sentence = lower_case(sentence)
+    sentence = remove_stop_words(sentence)
+    sentence = remove_numbers(sentence)
+    sentence = remove_punctuations(sentence)
+    sentence = remove_urls(sentence)
+    sentence = lemmatization(sentence)
+    return sentence
+
 # Test prediction
 text = "I am feeling very happy today!"
 normalized_text = normalized_sentence(text)
