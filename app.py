@@ -113,7 +113,9 @@ def predict_emotion(text):
         text = normalized_sentence(text)
         sequence = tokenizer.texts_to_sequences([text])
         padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
-
+        # Debugging: Log the sequence and padded sequence
+        logging.error(f"Sequence: {sequence}")
+        logging.error(f"Padded Sequence: {padded_sequence}")
         # Predict emotion
         prediction = model.predict(padded_sequence)
         predicted_label = np.argmax(prediction, axis=1)
