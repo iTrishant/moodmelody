@@ -18,12 +18,12 @@ nltk.data.path.append('./nltk_data')
 try:
     nltk.data.find('stopwords')
 except LookupError:
-    nltk.download('stopwords', download_dir='./nltk_data/corpora')
+    nltk.download('stopwords', download_dir='./nltk_data/corpora/')
 
 try:
     nltk.data.find('wordnet')
 except LookupError:
-    nltk.download('wordnet', download_dir='./nltk_data/corpora')
+    nltk.download('wordnet', download_dir='./nltk_data/corpora/')
 
 # Initialize stop words and lemmatizer
 stop_words = set(stopwords.words('english'))
