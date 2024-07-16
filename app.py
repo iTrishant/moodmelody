@@ -9,6 +9,7 @@ import re
 import string
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+import logging
 
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
