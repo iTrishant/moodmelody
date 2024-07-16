@@ -15,7 +15,7 @@ from nltk.stem import WordNetLemmatizer
 import psutil
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG, filename='app.log', filemode='w', format='%(asctime)s - %(levelname)s - %(message)s')
 
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
@@ -102,6 +102,7 @@ def normalized_sentence(sentence):
 # Function to preprocess and predict emotion
 def predict_emotion(text):
     try:
+        logging.info('Starting prediction')
         # Preprocessing
         logging.debug('Starting emotion prediction...')
         text = normalized_sentence(text)
@@ -122,6 +123,8 @@ def predict_emotion(text):
         predicted_emotion = le.inverse_transform(predicted_label)[0]
         logging.debug(f"Predicted emotion: {predicted_emotion}")
 
+        logging.info(f'Predicted emotion: {predicted_emotion}')
+      
         return predicted_emotion
 
     except Exception as e:
@@ -134,8 +137,8 @@ def log_resource_usage():
     process = psutil.Process()
     memory_info = process.memory_info()
     cpu_percent = psutil.cpu_percent(interval=1)
-    print(f"Memory Usage: {memory_info.rss / 1024 ** 2:.2f} MB")
-    print(f"CPU Usage: {cpu_percent}%")
+    logging.info(f"Memory Usage: {memory_info.rss / 1024 ** 2:.2f} MB")
+    logging.info(f"CPU Usage: {cpu_percent}%")
 
 log_resource_usage()
 
@@ -187,7 +190,10 @@ def main():
             else:
                 sp = spotipy.Spotify(auth=token_info['access_token'])
                 play_song(detected_emotion)
+              
+logging.info(f"Detected emotion: {detected_emotion}")
 log_resource_usage()
+
 if __name__ == "__main__":
     main()
 
