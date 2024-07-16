@@ -93,17 +93,23 @@ def normalized_sentence(sentence):
 
 # Function to preprocess and predict emotion
 def predict_emotion(text):
-    # Preprocessing
-    text = normalized_sentence(text)
-    sequence = tokenizer.texts_to_sequences([text])
-    padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
-
-    # Predict emotion
-    prediction = model.predict(padded_sequence)
-    predicted_label = np.argmax(prediction, axis=1)
-    predicted_emotion = le.inverse_transform(predicted_label)[0]
-
-    return predicted_emotion
+    try:
+        # Preprocessing
+        text = normalized_sentence(text)
+        sequence = tokenizer.texts_to_sequences([text])
+        padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
+        logging.debug(f"Sequence: {sequence}")
+        logging.debug(f"Padded Sequence: {padded_sequence}")
+        # Predict emotion
+        prediction = model.predict(padded_sequence)
+        predicted_label = np.argmax(prediction, axis=1)
+        predicted_emotion = le.inverse_transform(predicted_label)[0]
+        logging.debug(f"Predicted emotion: {predicted_emotion}")
+        return predicted_emotion
+    except Exception as e:
+        logging.error(f"Error during prediction: {e}")
+        st.error(f"An error occurred during prediction: {e}")
+        return None
 
 # Function to play song based on emotion
 def play_song(emotion):
