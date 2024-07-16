@@ -133,6 +133,9 @@ def play_song(emotion):
     else:
         st.write("No song found for this emotion.")
 
+def get_spotify_auth_url():
+    return sp_oauth.get_authorize_url()
+
 def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
 
