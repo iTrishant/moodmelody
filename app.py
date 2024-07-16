@@ -7,11 +7,14 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import re
 import string
+import os
+import logging
+import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-import logging
 
-logging.basicConfig(level=logging.DEBUG)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
@@ -32,7 +35,8 @@ sp_oauth = SpotifyOAuth(client_id=CLIENT_ID,
                         client_secret=CLIENT_SECRET,
                         redirect_uri=REDIRECT_URI,
                         scope="user-modify-playback-state user-read-playback-state",
-                        cache_path="./.spotifycache")
+                        cache_path="./.spotifycache",
+                        open_browser=False)
 
 # Define song URIs for each emotion
 emotion_to_song_uri = {
@@ -131,21 +135,6 @@ def play_song(emotion):
     song_uri = emotion_to_song_uri.get(emotion)
     if song_uri:
         try:
-            token_info = sp_oauth.get_cached_token()
-            if not token_info:
-                auth_url = sp_oauth.get_authorize_url()
-                st.markdown(f"[Authenticate with Spotify]({auth_url})")
-                code = st.text_input("Enter the code from the URL after authentication:")
-                if code:
-                    try:
-                        token_info = sp_oauth.get_access_token(code)
-                        sp = spotipy.Spotify(auth=token_info['access_token'])
-                    except spotipy.SpotifyOauthError as e:
-                        st.error(f"Spotify OAuth error: {e}")
-                        return
-            else:
-                sp = spotipy.Spotify(auth=token_info['access_token'])
-
             devices = sp.devices()
             if devices['devices']:
                 device_id = devices['devices'][0]['id']
