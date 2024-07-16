@@ -191,7 +191,7 @@ def main():
                 sp = spotipy.Spotify(auth=token_info['access_token'])
                 play_song(detected_emotion)
               
-logging.info(f"Detected emotion: {detected_emotion}")
+logging.info(f"Detected emotion")
 log_resource_usage()
 
 if __name__ == "__main__":
