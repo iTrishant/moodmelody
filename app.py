@@ -35,19 +35,19 @@ label_encoder_path = './saved_models/label_encoder.pkl'
 maxlen_path = './saved_models/maxlen.pkl'
 
 # Check if files exist
-print(f"Model file exists: {os.path.exists(model_path)}")
-print(f"Tokenizer file exists: {os.path.exists(tokenizer_path)}")
-print(f"Label Encoder file exists: {os.path.exists(label_encoder_path)}")
-print(f"Maxlen file exists: {os.path.exists(maxlen_path)}")
+st.write(f"Model file exists: {os.path.exists(model_path)}")
+st.write(f"Tokenizer file exists: {os.path.exists(tokenizer_path)}")
+st.write(f"Label Encoder file exists: {os.path.exists(label_encoder_path)}")
+st.write(f"Maxlen file exists: {os.path.exists(maxlen_path)}")
 
 # Check file permissions
-print(f"Model file permissions: {os.stat(model_path)}")
+st.write(f"Model file permissions: {os.stat(model_path)}")
 
 # Check file sizes
-print(f"Model file size: {os.path.getsize(model_path)} bytes")
-print(f"Tokenizer file size: {os.path.getsize(tokenizer_path)} bytes")
-print(f"Label Encoder file size: {os.path.getsize(label_encoder_path)} bytes")
-print(f"Maxlen file size: {os.path.getsize(maxlen_path)} bytes")
+st.write(f"Model file size: {os.path.getsize(model_path)} bytes")
+st.write(f"Tokenizer file size: {os.path.getsize(tokenizer_path)} bytes")
+st.write(f"Label Encoder file size: {os.path.getsize(label_encoder_path)} bytes")
+st.write(f"Maxlen file size: {os.path.getsize(maxlen_path)} bytes")
 
 model = load_model()
 tokenizer = load_tokenizer()
@@ -96,7 +96,7 @@ try:
     prediction = model.predict(padded_sequence)
     predicted_label = np.argmax(prediction, axis=1)
     predicted_emotion = le.inverse_transform(predicted_label)[0]
-    print(f"Predicted emotion: {predicted_emotion}")
+    st.write(f"Predicted emotion: {predicted_emotion}")
 except Exception as e:
-    print(f"Error during prediction: {e}")
+    st.write(f"Error during prediction: {e}")
 
