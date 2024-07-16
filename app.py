@@ -104,7 +104,9 @@ def predict_emotion(text):
         # Predict emotion
         prediction = model.predict(padded_sequence)
         predicted_label = np.argmax(prediction, axis=1)
+        print(predicted_label)
         predicted_emotion = le.inverse_transform(predicted_label)[0]
+        print(predicted_emotion)
         logging.debug(f"Predicted emotion: {predicted_emotion}")
         return predicted_emotion
     except Exception as e:
