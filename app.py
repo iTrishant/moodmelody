@@ -172,6 +172,7 @@ def main():
                     except spotipy.SpotifyOauthError as e:
                         st.error(f"Spotify OAuth error: {e}")
             else:
+                sp = spotipy.Spotify(auth=token_info['access_token'])
                 play_song(detected_emotion)
 
 if __name__ == "__main__":
