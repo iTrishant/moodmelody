@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit.components.v1 import iframe
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import numpy as np
@@ -139,27 +140,23 @@ def get_spotify_auth_url():
 def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
 
-    query_params = st.experimental_get_query_params()
-    if 'code' in query_params:
-        auth_code = query_params['code'][0]
-        token_info = sp_oauth.get_access_token(auth_code)
-        if token_info:
-            st.success("Authorization successful! You can now use MoodMelody.")
-        else:
-            st.error("Authorization failed.")
+    # Spotify authentication
+    token_info = sp_oauth.get_cached_token()
+    if not token_info:
+        auth_url = sp_oauth.get_authorize_url()
+        st.markdown(f"[Authenticate with Spotify]({auth_url})")
+        code = st.experimental_get_query_params().get('code')
+        if code:
+            token_info = sp_oauth.get_access_token(code)
+            sp = spotipy.Spotify(auth=token_info['access_token'])
     else:
-        # Check if user is authorized
-        if not sp_oauth.get_cached_token():
-            st.error("Please authorize MoodMelody to access your Spotify account.")
-            auth_url = get_spotify_auth_url()
-            st.markdown(f"[Authorize MoodMelody]({auth_url})")
-    # Additional app logic
-    text = st.text_input("Enter how you are feeling:")
+        sp = spotipy.Spotify(auth=token_info['access_token'])
 
+    user_input = st.text_input("Enter how you are feeling:")
     if st.button("Detect Emotion and Play Song"):
-        detected_emotion = predict_emotion(text)
+        detected_emotion = predict_emotion(user_input)
         st.write(f"Detected emotion: {detected_emotion}")
         play_song(detected_emotion)
-
+        
 if __name__ == "__main__":
     main()
