@@ -20,7 +20,7 @@ try:
     lemmatizer = WordNetLemmatizer()
 except LookupError:
     nltk.download('stopwords', download_dir='./nltk_data/corpora')
-    nltk.download('wordnet', download_dir='./nltk_data')
+    nltk.download('wordnet', download_dir='./nltk_data/corpora')
 
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
@@ -30,6 +30,7 @@ tokenizer_path = './saved_models/tokenizer.pkl'
 label_encoder_path = './saved_models/label_encoder.pkl'
 maxlen_path = './saved_models/maxlen.pkl'
 
+@st.cache
 try:
     model = tf.keras.models.load_model(model_path)
     with open(tokenizer_path, 'rb') as file:
