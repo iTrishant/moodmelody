@@ -1,3 +1,36 @@
+import tensorflow as tf
+import pickle
+import numpy as np
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+# Load the saved model, tokenizer, label encoder, and maxlen
+model_path = './saved_models/Emotion Recognition from text.h5'
+tokenizer_path = './saved_models/tokenizer.pkl'
+label_encoder_path = './saved_models/label_encoder.pkl'
+maxlen_path = './saved_models/maxlen.pkl'
+
+model = tf.keras.models.load_model(model_path)
+with open(tokenizer_path, 'rb') as file:
+    tokenizer = pickle.load(file)
+with open(label_encoder_path, 'rb') as file:
+    le = pickle.load(file)
+with open(maxlen_path, 'rb') as file:
+    maxlen = pickle.load(file)
+
+# Test prediction
+text = "I am feeling very happy today!"
+normalized_text = normalized_sentence(text)
+sequence = tokenizer.texts_to_sequences([normalized_text])
+padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
+
+prediction = model.predict(padded_sequence)
+predicted_label = np.argmax(prediction, axis=1)
+predicted_emotion = le.inverse_transform(predicted_label)[0]
+
+print(f"Predicted emotion: {predicted_emotion}")
+
+
+'''
 import streamlit as st
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
@@ -201,7 +234,7 @@ log_resource_usage()
 if __name__ == "__main__":
     main()
 
-
+'''
 '''
 import streamlit as st
 import spotipy
