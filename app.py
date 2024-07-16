@@ -106,8 +106,11 @@ def predict_emotion(text):
         # Preprocessing
         logging.debug('Starting emotion prediction...')
         text = normalized_sentence(text)
+        print(text)
         sequence = tokenizer.texts_to_sequences([text])
+        print(sequence)
         padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
+        print(padded_sequence)
 
         # Debugging: Log the sequence and padded sequence
         logging.debug(f"Sequence: {sequence}")
