@@ -22,8 +22,6 @@ except LookupError:
     nltk.download('stopwords', download_dir='./nltk_data/corpora')
     nltk.download('wordnet', download_dir='./nltk_data')
 
-@st.cache
-     
 model_path = './saved_models/Emotion Recognition from text.h5'
 tokenizer_path = './saved_models/tokenizer.pkl'
 label_encoder_path = './saved_models/label_encoder.pkl'
