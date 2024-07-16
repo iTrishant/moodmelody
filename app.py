@@ -5,22 +5,52 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import os
 
 model_path = './saved_models/Emotion Recognition from text.h5'
-print(f"Model file exists: {os.path.exists(model_path)}")
-
-# Load the saved model, tokenizer, label encoder, and maxlen
-model_path = './saved_models/Emotion Recognition from text.h5'
 tokenizer_path = './saved_models/tokenizer.pkl'
 label_encoder_path = './saved_models/label_encoder.pkl'
 maxlen_path = './saved_models/maxlen.pkl'
 
-model = tf.keras.models.load_model(model_path)
-with open(tokenizer_path, 'rb') as file:
-    tokenizer = pickle.load(file)
-with open(label_encoder_path, 'rb') as file:
-    le = pickle.load(file)
-with open(maxlen_path, 'rb') as file:
-    maxlen = pickle.load(file)
+# Check if files exist
+print(f"Model file exists: {os.path.exists(model_path)}")
+print(f"Tokenizer file exists: {os.path.exists(tokenizer_path)}")
+print(f"Label Encoder file exists: {os.path.exists(label_encoder_path)}")
+print(f"Maxlen file exists: {os.path.exists(maxlen_path)}")
 
+# Check file permissions
+print(f"Model file permissions: {os.stat(model_path)}")
+
+# Check file sizes
+print(f"Model file size: {os.path.getsize(model_path)} bytes")
+print(f"Tokenizer file size: {os.path.getsize(tokenizer_path)} bytes")
+print(f"Label Encoder file size: {os.path.getsize(label_encoder_path)} bytes")
+print(f"Maxlen file size: {os.path.getsize(maxlen_path)} bytes")
+
+try:
+    model = tf.keras.models.load_model(model_path)
+    print("Model loaded successfully")
+except Exception as e:
+    print(f"Error loading model: {e}")
+
+try:
+    with open(tokenizer_path, 'rb') as file:
+        tokenizer = pickle.load(file)
+    print("Tokenizer loaded successfully")
+except Exception as e:
+    print(f"Error loading tokenizer: {e}")
+
+try:
+    with open(label_encoder_path, 'rb') as file:
+        le = pickle.load(file)
+    print("Label encoder loaded successfully")
+except Exception as e:
+    print(f"Error loading label encoder: {e}")
+
+try:
+    with open(maxlen_path, 'rb') as file:
+        maxlen = pickle.load(file)
+    print("Maxlen loaded successfully")
+except Exception as e:
+    print(f"Error loading maxlen: {e}")
+    
 # Preprocessing steps
 def lemmatization(text):
     text = text.split()
@@ -59,11 +89,13 @@ normalized_text = normalized_sentence(text)
 sequence = tokenizer.texts_to_sequences([normalized_text])
 padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
 
-prediction = model.predict(padded_sequence)
-predicted_label = np.argmax(prediction, axis=1)
-predicted_emotion = le.inverse_transform(predicted_label)[0]
-
-print(f"Predicted emotion: {predicted_emotion}")
+try:
+    prediction = model.predict(padded_sequence)
+    predicted_label = np.argmax(prediction, axis=1)
+    predicted_emotion = le.inverse_transform(predicted_label)[0]
+    print(f"Predicted emotion: {predicted_emotion}")
+except Exception as e:
+    print(f"Error during prediction: {e}")
 
 
 '''
