@@ -12,6 +12,7 @@ import logging
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+import psutil
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -128,6 +129,16 @@ def predict_emotion(text):
         st.error(f"An error occurred during prediction: {e}")
         return None
 
+# Monitor resource usage
+def log_resource_usage():
+    process = psutil.Process()
+    memory_info = process.memory_info()
+    cpu_percent = psutil.cpu_percent(interval=1)
+    print(f"Memory Usage: {memory_info.rss / 1024 ** 2:.2f} MB")
+    print(f"CPU Usage: {cpu_percent}%")
+
+log_resource_usage()
+
 # Function to play song based on emotion
 def play_song(emotion):
     song_uri = emotion_to_song_uri.get(emotion)
@@ -176,7 +187,7 @@ def main():
             else:
                 sp = spotipy.Spotify(auth=token_info['access_token'])
                 play_song(detected_emotion)
-
+log_resource_usage()
 if __name__ == "__main__":
     main()
 
