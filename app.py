@@ -5,13 +5,20 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import os
 import re
 import string
+import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 # Ensure the necessary NLTK data is downloaded
-import nltk
-nltk.download('stopwords')
-nltk.download('wordnet')
+nltk.data.path.append("./nltk_data")
+try:
+    nltk.data.find('stopwords.zip')
+except LookupError:
+    nltk.download('stopwords', download_dir='./nltk_data')
+try:
+    nltk.data.find('wordnet.zip')
+except LookupError:
+    nltk.download('wordnet', download_dir='./nltk_data')
 
 # Initialize stop words and lemmatizer
 stop_words = set(stopwords.words('english'))
