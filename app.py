@@ -93,7 +93,7 @@ def normalized_sentence(sentence):
     sentence = remove_urls(sentence)
     sentence = lemmatization(sentence)
     return sentence
-
+print(le.classes_)
 # Function to preprocess and predict emotion
 def predict_emotion(text):
     try:
