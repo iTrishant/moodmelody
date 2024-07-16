@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit.components.v1 import iframe
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import numpy as np
@@ -8,7 +7,6 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import re
 import string
-import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import os
@@ -108,33 +106,43 @@ def normalized_sentence(sentence):
 
 # Function to preprocess and predict emotion
 def predict_emotion(text):
-    try:
-        # Preprocessing
-        text = normalized_sentence(text)
-        sequence = tokenizer.texts_to_sequences([text])
-        padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
+    # Preprocessing
+    text = normalized_sentence(text)
+    sequence = tokenizer.texts_to_sequences([text])
+    padded_sequence = pad_sequences(sequence, maxlen=maxlen, truncating='pre')
 
-        # Predict emotion
-        prediction = model.predict(padded_sequence)
-        predicted_label = np.argmax(prediction, axis=1)
-        predicted_emotion = le.inverse_transform(predicted_label)[0]
+    # Predict emotion
+    prediction = model.predict(padded_sequence)
+    predicted_label = np.argmax(prediction, axis=1)
+    predicted_emotion = le.inverse_transform(predicted_label)[0]
 
-        return predicted_emotion
-    except Exception as e:
-        logging.error(f"Error in predict_emotion: {str(e)}")
-        st.error("An error occurred while predicting the emotion.")
+    return predicted_emotion
 
 # Function to play song based on emotion
 def play_song(emotion):
     song_uri = emotion_to_song_uri.get(emotion)
     if song_uri:
-        devices = sp.devices()
-        if devices['devices']:
-            device_id = devices['devices'][0]['id']  # Select the first available device
-            sp.start_playback(device_id=device_id, uris=[song_uri])
-            st.write(f"Playing song for {emotion}: {song_uri}")
-        else:
-            st.write("No active devices found.")
+        try:
+          # Spotify authentication
+          token_info = sp_oauth.get_cached_token()
+          if not token_info:
+              auth_url = sp_oauth.get_authorize_url()
+              st.markdown(f"[Authenticate with Spotify]({auth_url})")
+              code = st.text_input("Enter the code from the URL after authentication:")
+              if code:
+                  token_info = sp_oauth.get_access_token(code)
+                  sp = spotipy.Spotify(auth=token_info['access_token'])
+          else:
+              sp = spotipy.Spotify(auth=token_info['access_token'])
+          devices = sp.devices()
+          if devices['devices']:
+                device_id = devices['devices'][0]['id']  # Select the first available device
+                sp.start_playback(device_id=device_id, uris=[song_uri])
+                st.write(f"Playing song for {emotion}: {song_uri}")
+          else:
+                st.write("No active devices found.")
+        except spotipy.SpotifyException as e:
+            st.error(f"An error occurred while playing song: {e}")
     else:
         st.write("No song found for this emotion.")
 
@@ -143,18 +151,6 @@ def get_spotify_auth_url():
 
 def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
-
-    # Spotify authentication
-    token_info = sp_oauth.get_cached_token()
-    if not token_info:
-        auth_url = sp_oauth.get_authorize_url()
-        st.markdown(f"[Authenticate with Spotify]({auth_url})")
-        code = st.text_input("Enter the code from the URL after authentication:")
-        if code:
-            token_info = sp_oauth.get_access_token(code)
-            sp = spotipy.Spotify(auth=token_info['access_token'])
-    else:
-        sp = spotipy.Spotify(auth=token_info['access_token'])
 
     text = st.text_input("Enter how you are feeling:")
     if st.button("Detect Emotion and Play Song"):
