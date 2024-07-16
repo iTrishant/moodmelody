@@ -121,6 +121,11 @@ def predict_emotion(text):
         st.error(f"An error occurred during prediction: {e}")
         return None
 
+# Test script for prediction function
+text = "I love you"
+emotion = predict_emotion(text)
+print(f"Predicted emotion: {emotion}")
+
 # Function to play song based on emotion
 def play_song(emotion):
     song_uri = emotion_to_song_uri.get(emotion)
