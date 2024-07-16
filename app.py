@@ -163,7 +163,7 @@ def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
 
     text = st.text_input("Enter how you are feeling:")
-    if st.button("Detect Emotion and Play Song"):
+    if st.button("Play"):
         detected_emotion = predict_emotion(text)
         if detected_emotion:
             st.write(f"Detected emotion: {detected_emotion}")
