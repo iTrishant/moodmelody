@@ -12,8 +12,11 @@ import streamlit as st
 import torch
 
 # Ensure the necessary NLTK data is downloaded
-nltk.download('stopwords')
-nltk.download('wordnet')
+nltk.data.path.append('./nltk_data')
+
+# Ensure the necessary NLTK data is downloaded
+nltk.download('stopwords', download_dir='./nltk_data')
+nltk.download('wordnet', download_dir='./nltk_data')
 
 # Initialize stop words and lemmatizer
 stop_words = set(stopwords.words('english'))
