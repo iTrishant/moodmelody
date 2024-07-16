@@ -8,6 +8,8 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+import streamlit as st
+import torch
 
 # Ensure the necessary NLTK data is downloaded
 nltk.download('stopwords')
@@ -17,6 +19,18 @@ nltk.download('wordnet')
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
 
+@st.cache
+def load_model():
+    return torch.load('./saved_models/Emotion Recognition from text.h5')
+def load_tokenizer():
+    return torch.load('./saved_models/tokenizer.pkl')
+def load_le():
+    return torch.load('./saved_models/label_encoder.pkl')
+def load_maxlen():
+    return torch.load('./saved_models/maxlen.pkl')
+    
+@st.cache(hash_funcs={"MyUnhashableClass": lambda _: None}
+          
 model_path = './saved_models/Emotion Recognition from text.h5'
 tokenizer_path = './saved_models/tokenizer.pkl'
 label_encoder_path = './saved_models/label_encoder.pkl'
@@ -37,32 +51,10 @@ print(f"Tokenizer file size: {os.path.getsize(tokenizer_path)} bytes")
 print(f"Label Encoder file size: {os.path.getsize(label_encoder_path)} bytes")
 print(f"Maxlen file size: {os.path.getsize(maxlen_path)} bytes")
 
-try:
-    model = tf.keras.models.load_model(model_path)
-    print("Model loaded successfully")
-except Exception as e:
-    print(f"Error loading model: {e}")
-
-try:
-    with open(tokenizer_path, 'rb') as file:
-        tokenizer = pickle.load(file)
-    print("Tokenizer loaded successfully")
-except Exception as e:
-    print(f"Error loading tokenizer: {e}")
-
-try:
-    with open(label_encoder_path, 'rb') as file:
-        le = pickle.load(file)
-    print("Label encoder loaded successfully")
-except Exception as e:
-    print(f"Error loading label encoder: {e}")
-
-try:
-    with open(maxlen_path, 'rb') as file:
-        maxlen = pickle.load(file)
-    print("Maxlen loaded successfully")
-except Exception as e:
-    print(f"Error loading maxlen: {e}")
+model = load_model()
+tokenizer = load_tokenizer()
+maxlen = load_maxlen()
+le = load_le()
     
 # Preprocessing steps
 def lemmatization(text):
