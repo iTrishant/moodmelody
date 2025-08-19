@@ -1,3 +1,4 @@
 # moodmelody
 
-**Deployed App** - https://moodmelody-6zfdngomcsns4f6rhmwx6b.streamlit.app/
+**Deployed App**: [MoodMelody on Streamlit](https://moodmelody-6zfdngomsns4f6rhmwx6b.streamlit.app/)
+
