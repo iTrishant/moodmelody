@@ -96,6 +96,7 @@ Users provide a **text prompt** (e.g., *"I feel anxious but hopeful"*), and the 
 ---
 
 ## Folder Structure
+```plaintext
 moodmelody/
 ├─ app.py                         # Streamlit app (main entry point)
 ├─ moodmelody_final_code.ipynb    # Experiments / final notebook
