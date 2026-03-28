@@ -80,13 +80,19 @@ def predict_emotion(text, model, tokenizer, le, maxlen):
     return le.inverse_transform([np.argmax(pred, axis=1)[0]])[0]
 
 def play_song(sp, emotion):
-    uri     = emotion_to_song_uri.get(emotion)
-    devices = sp.devices().get('devices', [])
-    if not devices:
-        st.warning("No active Spotify device found. Open Spotify on any device first.")
-        return
-    sp.start_playback(device_id=devices[0]['id'], uris=[uri])
-    st.success(f"Playing song for {emotion}")
+    uri = emotion_to_song_uri.get(emotion)
+    try:
+        devices = sp.devices()
+        st.write(f"Devices found: {devices}")
+        if not devices['devices']:
+            st.warning("No active Spotify device found. Open Spotify on any device and play something first.")
+            return
+        device_id = devices['devices'][0]['id']
+        st.write(f"Using device: {devices['devices'][0]['name']}")
+        sp.start_playback(device_id=device_id, uris=[uri])
+        st.success(f"Playing song for {emotion}")
+    except Exception as e:
+        st.error(f"Playback error: {e}")
 
 def main():
     st.title("MoodMelody: Emotion-based Music Recommender")
