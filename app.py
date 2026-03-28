@@ -154,5 +154,8 @@ def main():
                 except Exception as e:
                     st.error(f"Failed to extract token: {e}")
 
+        else:
+            play_song(sp, emotion)
+
 if __name__ == "__main__":
     main()
