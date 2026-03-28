@@ -130,16 +130,23 @@ def main():
 
         emotion = predict_emotion(text, model, tokenizer, le, maxlen)
         st.write(f"Detected emotion: {emotion}")
-
+        
         if sp is None:
             auth_url = sp_oauth.get_authorize_url()
             st.markdown(
-                f'<a href="{auth_url}" target="_self">Click here to authenticate with Spotify</a>',
+                f'<a href="{auth_url}" target="_blank">Click here to authenticate with Spotify</a>',
                 unsafe_allow_html=True,
             )
-            st.info("You will be redirected back automatically after authorising.")
-        else:
-            play_song(sp, emotion)
+            st.info("After authorising, copy the full redirected URL and paste it below.")
+            pasted_url = st.text_input("Paste the full redirect URL here:")
+            if pasted_url:
+                try:
+                    code = pasted_url.split("code=")[1].split("&")[0]
+                    token_info = sp_oauth.get_access_token(code, as_dict=True, check_cache=False)
+                    st.session_state["token_info"] = token_info
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Failed to extract token: {e}")
 
 if __name__ == "__main__":
     main()
